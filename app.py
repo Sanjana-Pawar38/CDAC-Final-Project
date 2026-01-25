@@ -70,6 +70,6 @@ def create_post():
     return render_template("create_post.html")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000)
 
 
