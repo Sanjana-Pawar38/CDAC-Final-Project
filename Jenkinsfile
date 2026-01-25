@@ -17,7 +17,7 @@ pipeline {
         stage('SonarQube Quality Analysis'){
             steps {
                 withSonarQubeEnv("sonar"){
-                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=flask_blog  -Dsonar.projectkey=flask_blog"
+                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=flask_blog  -Dsonar.projectKey=flask_blog"
                      }
                   }
              }
