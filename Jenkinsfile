@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "shankar0804/flask-blog"
+        IMAGE_NAME = "sanjana038/flask-blog"
         IMAGE_TAG = "latest"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Shankar-0804/cdac-project.git'
+                git branch: 'main', url: 'https://github.com/Sanjana-Pawar38/CDAC-Final-Project.git'
             }
         }
 
