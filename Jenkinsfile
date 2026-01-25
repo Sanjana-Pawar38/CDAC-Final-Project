@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "sanjana038/flask-blog"
         IMAGE_TAG = "latest"
+        SONAR_HOME= tool "sonar"
     }
 
     stages {
@@ -12,6 +13,14 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Sanjana-Pawar38/CDAC-Final-Project.git'
             }
         }
+          
+        stage('SonarQube Quality Analysis'){
+            steps {
+                withSonarQubeEnv("sonar"){
+                    sh "SONAR_HOME/bin/sonar-scanner -Dsonar .projectName=flask_blog  -Dsonar .projectkey=flask_blog"
+                     }
+                  }
+             }
 
         stage('Build Image') {
             steps {
