@@ -1,5 +1,6 @@
 pipeline {
-    agent any
+    // Run all stages on the docker-agent
+    agent { label 'docker-agent' }
 
     environment {
         IMAGE_NAME = "sanjana038/flask-blog"
