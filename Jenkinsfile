@@ -4,27 +4,62 @@ pipeline {
     environment {
         IMAGE_NAME = "sanjana038/flask-blog"
         IMAGE_TAG = "latest"
-        SONAR_HOME= tool "sonar"
+        SONAR_HOME = tool "sonar"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Sanjana-Pawar38/CDAC-Final-Project.git'
             }
         }
-          
-        stage('SonarQube Quality Analysis'){
+
+        stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("sonar"){
-                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=flask_blog  -Dsonar.projectKey=flask_blog"
-                     }
-                  }
-             }
+                withSonarQubeEnv("sonar") {
+                    sh """
+                      $SONAR_HOME/bin/sonar-scanner \
+                      -Dsonar.projectName=flask_blog \
+                      -Dsonar.projectKey=flask_blog
+                    """
+                }
+            }
+        }
+
+        stage('SonarQube Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Trivy FS Scan (Source Code)') {
+            steps {
+                sh '''
+                  trivy fs \
+                  --exit-code 1 \
+                  --severity HIGH,CRITICAL \
+                  .
+                '''
+            }
+        }
 
         stage('Build Image') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+            }
+        }
+
+        stage('Trivy Image Scan') {
+            steps {
+                sh '''
+                  trivy image \
+                  --exit-code 1 \
+                  --severity HIGH,CRITICAL \
+                  $IMAGE_NAME:$IMAGE_TAG
+                '''
             }
         }
 
